@@ -1,7 +1,6 @@
 package com.newspoint.entity;
 
 import lombok.*;
-
 import java.time.LocalDate;
 
 @AllArgsConstructor

@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,17 +30,17 @@ public class UserController {
     }
 
     @PostMapping(value = "uploadData")
-    public void uploadData (@RequestParam MultipartFile csvFile) throws IOException, ParseException {
+    public void uploadData(@RequestParam MultipartFile csvFile) throws IOException {
         csvService.addUsersFromFile(csvFile);
     }
 
     @GetMapping(value = "getNumberOfUsers")
-    public long getNumberOfUsers () {
+    public long getNumberOfUsers() {
         return service.getNumberOfUsers();
     }
 
     @GetMapping(value = "getUsersSortedByAge")
-    public List<UserDto> getUsersSortedByAge () {
+    public List<UserDto> getUsersSortedByAge() {
         List<User> listOfUsers = (List<User>) service.getAllUsers();
         List<UserDto> result = mapper.mapToUserDtoList(
                 listOfUsers.stream()
@@ -52,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping(value = "getOldestUserWithPhoneNumber")
-    public UserDto getOldestUserWithPhoneNumber () {
+    public UserDto getOldestUserWithPhoneNumber() {
         UserDto result = null;
         List<UserDto> sortedList = getUsersSortedByAge();
         for (UserDto userDto : sortedList) {

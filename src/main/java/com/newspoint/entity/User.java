@@ -1,8 +1,6 @@
 package com.newspoint.entity;
 
 import lombok.*;
-import org.apache.tomcat.jni.Local;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,7 +14,6 @@ import java.time.LocalDate;
 @Setter
 @Entity(name = "Users")
 public class User {
-
     @Id
     @GeneratedValue
     @Column(name = "Id", unique = true)

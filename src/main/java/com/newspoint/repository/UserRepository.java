@@ -8,7 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends CrudRepository<User, Long> {
 
     Iterable<User> findAllByLastName(String lastname);
-
     Iterable<User> findAllByLastNameStartsWith(String lastname);
-
 }
