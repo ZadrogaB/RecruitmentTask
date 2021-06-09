@@ -1,8 +1,6 @@
 package com.newspoint.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,23 +8,28 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @RequiredArgsConstructor
 @Getter
+@Setter
 @Entity(name = "Users")
 public class User {
 
     @Id
     @GeneratedValue
-    @Column(name = "Id", nullable = false, unique = true)
+    @Column(name = "Id", unique = true)
     private Long id;
 
-    @Column(name = "First_Name", nullable = false)
+    @NonNull
+    @Column(name = "First_Name")
     private String firstName;
 
-    @Column(name = "Last_Name", nullable = false)
+    @NonNull
+    @Column(name = "Last_Name")
     private String lastName;
 
-    @Column(name = "Birth_Date", nullable = false)
+    @NonNull
+    @Column(name = "Birth_Date")
     private String birthDate;
 
     @Column(name = "Phone_Number", unique = true, length = 9)
