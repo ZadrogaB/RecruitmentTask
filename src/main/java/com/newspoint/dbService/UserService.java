@@ -1,5 +1,6 @@
 package com.newspoint.dbService;
 
+import com.newspoint.Exception.UserNotExist;
 import com.newspoint.entity.User;
 import com.newspoint.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,21 +24,24 @@ public class UserService {
         return repository.findAll();
     }
 
-    public void deleteById(Long id) {
-        repository.deleteById(id);
+    public void deleteById(Long id) throws UserNotExist {
+        try {
+            repository.deleteById(id);
+        } catch (Exception exception) {
+            throw new UserNotExist();
+        }
     }
 
-    public void deleteById(List<Long> ids) {
-        repository.deleteAllById(ids);
-    }
-
-    public Optional<Iterable<User>> findUserByLastname(String lastname) {
+    public Iterable<User> findUserByLastname(String lastname) {
         return repository.findAllByLastName(lastname);
     }
 
-    public Optional<Iterable<User>> findAllByLastNameStartsWith(String lastname) {
+    public Iterable<User> findAllByLastNameStartsWith(String lastname) {
         return repository.findAllByLastNameStartsWith(lastname);
     }
 
+    public Boolean existById(Long id) {
+        return repository.existsById(id);
+    }
 
 }

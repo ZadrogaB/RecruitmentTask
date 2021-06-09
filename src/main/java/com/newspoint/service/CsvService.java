@@ -6,19 +6,19 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.*;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @RequiredArgsConstructor
 @Service
 public class CsvService {
 
     private final UserService service;
+    Logger logger = LoggerFactory.getLogger(CsvService.class);
 
     public void addUsersFromFile(MultipartFile csvFile) throws IOException {
         Iterable<CSVRecord> records = prepareRecords(csvFile);
@@ -38,8 +38,10 @@ public class CsvService {
                 try {
                     service.saveUser(user);
                 } catch (Exception exception) {
-                    System.out.println(exception);
+                    logger.warn("Unable to save record from CSV File");
                 }
+            } else {
+                logger.warn("Record is damaged");
             }
         }
     }

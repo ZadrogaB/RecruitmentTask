@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    Optional<Iterable<User>> findAllByLastName(String lastname);
-    Optional<Iterable<User>> findAllByLastNameStartsWith(String lastname);
+    Iterable<User> findAllByLastName(String lastname);
+    Iterable<User> findAllByLastNameStartsWith(String lastname);
 }

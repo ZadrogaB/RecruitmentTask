@@ -6,6 +6,8 @@ import com.newspoint.entity.User;
 import com.newspoint.entity.UserDto;
 import com.newspoint.mapper.UserMapper;
 import com.newspoint.service.CsvService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ public class UserController {
     private final UserService service;
     private final CsvService csvService;
     private final UserMapper mapper;
+    Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public UserController(UserService service, CsvService csvService, UserMapper mapper) {
@@ -31,8 +34,12 @@ public class UserController {
     }
 
     @PostMapping(value = "uploadData")
-    public void uploadData(@RequestParam MultipartFile csvFile) throws IOException {
-        csvService.addUsersFromFile(csvFile);
+    public void uploadData(@RequestParam MultipartFile csvFile) {
+        try {
+            csvService.addUsersFromFile(csvFile);
+        } catch (IOException exception) {
+            logger.error("IOException error. Cant read the file");
+        }
     }
 
     @GetMapping(value = "getNumberOfUsers")
@@ -57,7 +64,7 @@ public class UserController {
         for (UserDto userDto : sortedList) {
             result = userDto;
             if (!result.getPhoneNumber().isEmpty()) {
-                break;
+                logger.info("There is no such user");
             }
         }
         return result;
@@ -65,23 +72,28 @@ public class UserController {
 
     @DeleteMapping(value = "deleteUserById")
     public void deleteUserById(@RequestParam Long id) {
-        service.deleteById(id);
+        try {
+            service.deleteById(id);
+        } catch (UserNotExist userNotExist) {
+            logger.info("User with that ID doesn't exist");
+        }
     }
 
     @DeleteMapping(value = "deleteUserListById", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void deleteUserListById(@RequestBody List<Long> ids) {
-        service.deleteById(ids);
+        ids.stream()
+                .forEach(id -> deleteUserById(id));
     }
 
     @GetMapping(value = "findUserByLastname")
-    public List<UserDto> findUserByLastname(@RequestParam String lastname) throws UserNotExist {
-        List<User> result = (List < User >) service.findUserByLastname(lastname).orElseThrow(UserNotExist::new);
+    public List<UserDto> findUserByLastname(@RequestParam String lastname) {
+        List<User> result = (List <User>) service.findUserByLastname(lastname);
         return mapper.mapToUserDtoList(result);
     }
 
     @GetMapping(value = "findAllByLastNameStartsWith")
-    public List<UserDto> findAllByLastNameStartsWith(@RequestParam String lastname) throws UserNotExist {
-        List<User> result = (List < User >) service.findAllByLastNameStartsWith(lastname).orElseThrow(UserNotExist::new);
+    public List<UserDto> findAllByLastNameStartsWith(@RequestParam String lastname) {
+        List<User> result = (List <User>) service.findAllByLastNameStartsWith(lastname);
         return mapper.mapToUserDtoList(result);
     }
 }
