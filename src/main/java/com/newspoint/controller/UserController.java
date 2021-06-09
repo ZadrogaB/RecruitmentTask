@@ -6,12 +6,14 @@ import com.newspoint.entity.UserDto;
 import com.newspoint.mapper.UserMapper;
 import com.newspoint.service.CsvService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -60,5 +62,25 @@ public class UserController {
             }
         }
         return result;
+    }
+
+    @DeleteMapping(value = "deleteUserById")
+    public void deleteUserById(@RequestParam Long id) {
+        service.deleteById(id);
+    }
+
+    @DeleteMapping(value = "deleteUserListById", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void deleteUserListById(@RequestBody List<Long> ids) {
+        service.deleteById(ids);
+    }
+
+    @GetMapping(value = "findUserByLastname")
+    public List<UserDto> findUserByLastname(@RequestParam String surname) {
+        return mapper.mapToUserDtoList((List < User >) service.findUserByLastname(surname));
+    }
+
+    @GetMapping(value = "findAllByLastNameStartsWith")
+    public List<UserDto> findAllByLastNameStartsWith(@RequestParam String surname) {
+        return mapper.mapToUserDtoList((List < User >) service.findAllByLastNameStartsWith(surname));
     }
 }
