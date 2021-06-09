@@ -1,11 +1,13 @@
 package com.newspoint.entity;
 
 import lombok.*;
+import org.apache.tomcat.jni.Local;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,7 +32,7 @@ public class User {
 
     @NonNull
     @Column(name = "Birth_Date")
-    private String birthDate;
+    private LocalDate birthDate;
 
     @Column(name = "Phone_Number", unique = true, length = 9)
     private String phoneNumber;

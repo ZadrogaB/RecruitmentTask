@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @RequiredArgsConstructor
 @Service
@@ -22,17 +24,27 @@ public class CsvService {
         Iterable<CSVRecord> records = prepareRecords(csvFile);
 
         for (CSVRecord record : records) {
-            User user = new User(record.get("first_name").strip(),
-                                 record.get("last_name").strip(),
-                                 record.get("birth_date").strip());
-            if (record.get("phone_no").length() == 9 ) {
-                user.setPhoneNumber(record.get("phone_no").strip());
+            String firstName = record.get("first_name").strip();
+            String lastName = record.get("last_name").strip();
+            String birthDate = record.get("birth_date").strip();
+            String phoneNumber = record.get("phone_no").strip();
+
+            if (firstName.length() != 0 && lastName.length() != 0 && birthDate.length() !=0) {
+                User user = new User(firstName, lastName, getLocalDate(birthDate));
+
+                if (phoneNumber.length() == 9) {
+                    user.setPhoneNumber(phoneNumber);
+                }
+                try {
+                    service.saveUser(user);
+                } catch (Exception exception) {
+                    System.out.println(exception);
+                }
             }
-            service.saveUser(user);
         }
     }
 
-    public Iterable<CSVRecord> prepareRecords (MultipartFile csvFile) throws IOException {
+    private Iterable<CSVRecord> prepareRecords (MultipartFile csvFile) throws IOException {
         String[] HEADERS = { "first_name", "last_name", "birth_date", "phone_no"};
         BufferedReader fileReader = new BufferedReader(new InputStreamReader(csvFile.getInputStream(), "UTF-8"));
 
@@ -43,5 +55,18 @@ public class CsvService {
         Iterable<CSVRecord> records = csvParser.getRecords();
 
         return records;
+    }
+
+    private LocalDate getLocalDate (String date) {
+        int year, month, day, nextDot;
+        nextDot = date.indexOf(".");
+        year = Integer.valueOf(date.substring(0, nextDot));
+        date = date.substring(nextDot+1);
+        nextDot = date.indexOf(".");
+        month = Integer.valueOf(date.substring(0, nextDot));
+        date = date.substring(nextDot+1);
+        day = Integer.valueOf(date);
+        LocalDate birthDate = LocalDate.of(year, month, day);
+        return birthDate;
     }
 }

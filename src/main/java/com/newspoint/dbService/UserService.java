@@ -24,4 +24,9 @@ public class UserService {
         return repository.count();
     }
 
+    public Iterable<User> getAllUsers () {
+        return repository.findAll();
+    }
+
+
 }
