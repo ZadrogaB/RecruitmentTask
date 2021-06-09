@@ -1,5 +1,6 @@
 package com.newspoint.controller;
 
+import com.newspoint.Exception.UserNotExist;
 import com.newspoint.dbService.UserService;
 import com.newspoint.entity.User;
 import com.newspoint.entity.UserDto;
@@ -73,12 +74,14 @@ public class UserController {
     }
 
     @GetMapping(value = "findUserByLastname")
-    public List<UserDto> findUserByLastname(@RequestParam String surname) {
-        return mapper.mapToUserDtoList((List < User >) service.findUserByLastname(surname));
+    public List<UserDto> findUserByLastname(@RequestParam String lastname) throws UserNotExist {
+        List<User> result = (List < User >) service.findUserByLastname(lastname).orElseThrow(UserNotExist::new);
+        return mapper.mapToUserDtoList(result);
     }
 
     @GetMapping(value = "findAllByLastNameStartsWith")
-    public List<UserDto> findAllByLastNameStartsWith(@RequestParam String surname) {
-        return mapper.mapToUserDtoList((List < User >) service.findAllByLastNameStartsWith(surname));
+    public List<UserDto> findAllByLastNameStartsWith(@RequestParam String lastname) throws UserNotExist {
+        List<User> result = (List < User >) service.findAllByLastNameStartsWith(lastname).orElseThrow(UserNotExist::new);
+        return mapper.mapToUserDtoList(result);
     }
 }

@@ -31,11 +31,11 @@ public class UserService {
         repository.deleteAllById(ids);
     }
 
-    public Iterable<User> findUserByLastname(String lastname) {
+    public Optional<Iterable<User>> findUserByLastname(String lastname) {
         return repository.findAllByLastName(lastname);
     }
 
-    public Iterable<User> findAllByLastNameStartsWith(String lastname) {
+    public Optional<Iterable<User>> findAllByLastNameStartsWith(String lastname) {
         return repository.findAllByLastNameStartsWith(lastname);
     }
 
