@@ -5,7 +5,6 @@ import com.newspoint.entity.User;
 import com.newspoint.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,10 +37,6 @@ public class UserService {
 
     public Iterable<User> findAllByLastNameStartsWith(String lastname) {
         return repository.findAllByLastNameStartsWith(lastname);
-    }
-
-    public Boolean existById(Long id) {
-        return repository.existsById(id);
     }
 
 }

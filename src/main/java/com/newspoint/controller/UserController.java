@@ -36,6 +36,7 @@ public class UserController {
     @PostMapping(value = "uploadData")
     public void uploadData(@RequestParam MultipartFile csvFile) {
         try {
+            logger.info("File added correctly");
             csvService.addUsersFromFile(csvFile);
         } catch (IOException exception) {
             logger.error("IOException error. Cant read the file");
@@ -59,30 +60,17 @@ public class UserController {
 
     @GetMapping(value = "getOldestUserWithPhoneNumber")
     public UserDto getOldestUserWithPhoneNumber() {
-        UserDto result = null;
         List<UserDto> sortedList = getUsersSortedByAge();
-        for (UserDto userDto : sortedList) {
-            result = userDto;
-            if (!result.getPhoneNumber().isEmpty()) {
-                logger.info("There is no such user");
-            }
-        }
-        return result;
-    }
-
-    @DeleteMapping(value = "deleteUserById")
-    public void deleteUserById(@RequestParam Long id) {
+        List<UserDto> sortedListWithPhoneNumbers = sortedList.stream()
+                .filter(userDto -> userDto.getPhoneNumber() != null)
+                .collect(Collectors.toList());
         try {
-            service.deleteById(id);
-        } catch (UserNotExist userNotExist) {
-            logger.info("User with that ID doesn't exist");
+            UserDto result = sortedListWithPhoneNumbers.get(0);
+            return result;
+        } catch (Exception exception) {
+            logger.error("No one from users had phone number");
         }
-    }
-
-    @DeleteMapping(value = "deleteUserListById", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteUserListById(@RequestBody List<Long> ids) {
-        ids.stream()
-                .forEach(id -> deleteUserById(id));
+        return null;
     }
 
     @GetMapping(value = "findUserByLastname")
@@ -95,5 +83,21 @@ public class UserController {
     public List<UserDto> findAllByLastNameStartsWith(@RequestParam String lastname) {
         List<User> result = (List <User>) service.findAllByLastNameStartsWith(lastname);
         return mapper.mapToUserDtoList(result);
+    }
+
+    @DeleteMapping(value = "deleteUserById")
+    public void deleteUserById(@RequestParam Long id) {
+        try {
+            service.deleteById(id);
+            logger.info("User with ID=" + id + " deleted correctly");
+        } catch (UserNotExist userNotExist) {
+            logger.error("User with ID=" + id + " doesn't exist");
+        }
+    }
+
+    @DeleteMapping(value = "deleteUserListById", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void deleteUserListById(@RequestBody List<Long> ids) {
+        ids.stream()
+                .forEach(id -> deleteUserById(id));
     }
 }

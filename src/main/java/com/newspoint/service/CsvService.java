@@ -37,11 +37,12 @@ public class CsvService {
                 }
                 try {
                     service.saveUser(user);
+                    logger.info(user + " saved correctly");
                 } catch (Exception exception) {
-                    logger.warn("Unable to save record from CSV File");
+                    logger.error("Unable to save record: " + record + " from CSV File");
                 }
             } else {
-                logger.warn("Record is damaged");
+                logger.error("Record " + record + " is damaged");
             }
         }
     }

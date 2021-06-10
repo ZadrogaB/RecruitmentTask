@@ -33,4 +33,15 @@ public class User {
 
     @Column(name = "Phone_Number", unique = true, length = 9)
     private String phoneNumber;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", birthDate=" + birthDate +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
+    }
 }
